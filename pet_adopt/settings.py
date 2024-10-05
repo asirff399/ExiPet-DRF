@@ -31,10 +31,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", ".vercel.app"]
 
-
 CORS_ALLOW_ALL_ORIGINS = True 
 
-CSRF_TRUSTED_ORIGINS = ['https://exipet-drf-api.onrender.com','https://*.127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://exi-pet-3sb271ofo-asirff399s-projects.vercel.app','https://*.127.0.0.1']
 
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
