@@ -148,7 +148,7 @@ class PasswordChangeView(APIView):
 #                 "user_errors": user_serializer.errors,
 #                 "custom_user_errors": custom_user_serializer.errors
 #             },status=status.HTTP_400_BAD_REQUEST
-        )
+# )
 
 class UserProfileUpdateApiView(APIView):
     # permission_classes = [IsAuthenticated]
