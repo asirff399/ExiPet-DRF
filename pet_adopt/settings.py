@@ -31,9 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", ".vercel.app"]
 
-CORS_ALLOW_ALL_ORIGINS = True 
 
-CSRF_TRUSTED_ORIGINS = ['https://exi-pet-3sb271ofo-asirff399s-projects.vercel.app','https://*.127.0.0.1']
 
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
@@ -72,6 +70,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'pet_adopt.urls'
 
+CORS_ALLOW_ALL_ORIGINS = True 
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = ['https://exi-pet-3sb271ofo-asirff399s-projects.vercel.app','https://*.127.0.0.1','https://exipet.netlify.app','http://127.0.0.1:5500']
 
 TEMPLATES = [
     {
