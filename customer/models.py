@@ -6,14 +6,14 @@ from pet.models import Pet
 
 class Customer(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,null=True,blank=True)
-    # image = models.FileField(upload_to="customer-images")
     image = models.CharField(max_length=200) 
     balance = models.DecimalField(default=0, max_digits=12, decimal_places=2)
+    phone = models.DecimalField(default=0, max_digits=11, decimal_places=0)
+    address = models.CharField(max_length=200)
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES,default='Customer')
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
-
 
 class Review(models.Model):
     reviewer = models.ForeignKey(Customer,on_delete=models.CASCADE)

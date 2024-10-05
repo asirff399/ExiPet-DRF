@@ -1,7 +1,7 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from rest_framework import viewsets
 from .models import Customer,Review
-from .serializers import CustomerSerializer,ReviewSerializer,UserLoginSerializer,RegistrationSerializer,PasswordChangeSerializer
+from .serializers import UserSerializer,CustomerSerializer,ReviewSerializer,UserLoginSerializer,RegistrationSerializer,PasswordChangeSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.tokens import default_token_generator
@@ -60,7 +60,7 @@ class UserRegistrationApiView(APIView):
             print('token', token)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             print('uid',uid)
-            confirm_link = f'https://exipet-drf-api.onrender.com/customer/active/{uid}/{token}'
+            confirm_link = f'https://exi-pet-2r02ffxed-asirff399s-projects.vercel.app/customer/active/{uid}/{token}'
             email_subject = "Confirmation Email"
             email_body = render_to_string('confirm_email.html',{'confirm_link':confirm_link}) 
             email = EmailMultiAlternatives(email_subject,'',to=[user.email])
@@ -70,7 +70,6 @@ class UserRegistrationApiView(APIView):
         else:
             print("Serializer errors",serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    # return Response({'error':serializer.errors})
 
 def activate(request,uid64,token):
     try:
@@ -125,4 +124,29 @@ class PasswordChangeView(APIView):
             return Response({"detail":"Password updated successfully."},status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
+class UserProfileUpdateApiView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def put(self,request,*args, **kwargs):
+        user = request.user
+        custom_user = get_object_or_404(Customer,user=user)
+
+        user_serializer = UserSerializer(user,data=request.data.get('user'))
+        custom_user_serializer = CustomerSerializer(custom_user,data=request.data.get('custom_user'))
+
+        if user_serializer.is_valid() and custom_user_serializer.is_valid():
+            user_serializer.save()
+            custom_user_serializer.save()
+            return Response(
+                {
+                    "user": user_serializer.data,
+                    "custom_user": custom_user_serializer.data
+                }, status=status.HTTP_200_OK
+            )
+        return Response(
+            {
+                "user_errors": user_serializer.errors,
+                "custom_user_errors": custom_user_serializer.errors
+            },status=status.HTTP_400_BAD_REQUEST
+        )
 
