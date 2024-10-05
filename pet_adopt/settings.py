@@ -76,6 +76,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = ['https://exi-pet-3sb271ofo-asirff399s-projects.vercel.app','https://*.127.0.0.1','https://exipet.netlify.app','http://127.0.0.1:5500']
 
+CORS_ALLOWED_OREGINS = ['http://127.0.0.1:5500','https://exipet.netlify.app']
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
