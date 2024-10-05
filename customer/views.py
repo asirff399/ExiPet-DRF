@@ -60,7 +60,7 @@ class UserRegistrationApiView(APIView):
             print('token', token)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             print('uid',uid)
-            confirm_link = f'https://exi-pet-2r02ffxed-asirff399s-projects.vercel.app/customer/active/{uid}/{token}'
+            confirm_link = f'https://exi-pet-drf-git-main-asirff399s-projects.vercel.app/customer/active/{uid}/{token}'
             email_subject = "Confirmation Email"
             email_body = render_to_string('confirm_email.html',{'confirm_link':confirm_link}) 
             email = EmailMultiAlternatives(email_subject,'',to=[user.email])
@@ -124,15 +124,41 @@ class PasswordChangeView(APIView):
             return Response({"detail":"Password updated successfully."},status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
+# class UserProfileUpdateApiView(APIView):
+#     # permission_classes = [IsAuthenticated]
+
+#     def put(self,request,*args, **kwargs):
+#         user = request.user
+#         custom_user = get_object_or_404(Customer,user=user)
+
+#         user_serializer = UserSerializer(user,data=request.data.get('user'))
+#         custom_user_serializer = CustomerSerializer(custom_user,data=request.data.get('custom_user'))
+
+#         if user_serializer.is_valid() and custom_user_serializer.is_valid():
+#             user_serializer.save()
+#             custom_user_serializer.save()
+#             return Response(
+#                 {
+#                     "user": user_serializer.data,
+#                     "custom_user": custom_user_serializer.data
+#                 }, status=status.HTTP_200_OK
+#             )
+#         return Response(
+#             {
+#                 "user_errors": user_serializer.errors,
+#                 "custom_user_errors": custom_user_serializer.errors
+#             },status=status.HTTP_400_BAD_REQUEST
+        )
+
 class UserProfileUpdateApiView(APIView):
     # permission_classes = [IsAuthenticated]
 
-    def put(self,request,*args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         user = request.user
-        custom_user = get_object_or_404(Customer,user=user)
+        custom_user = get_object_or_404(Customer, user=user)
 
-        user_serializer = UserSerializer(user,data=request.data.get('user'))
-        custom_user_serializer = CustomerSerializer(custom_user,data=request.data.get('custom_user'))
+        user_serializer = UserSerializer(user, data=request.data.get('user'), partial=True)
+        custom_user_serializer = CustomerSerializer(custom_user, data=request.data.get('custom_user'), partial=True)
 
         if user_serializer.is_valid() and custom_user_serializer.is_valid():
             user_serializer.save()
@@ -141,11 +167,14 @@ class UserProfileUpdateApiView(APIView):
                 {
                     "user": user_serializer.data,
                     "custom_user": custom_user_serializer.data
-                }, status=status.HTTP_200_OK
+                },
+                status=status.HTTP_200_OK
             )
+
         return Response(
             {
                 "user_errors": user_serializer.errors,
                 "custom_user_errors": custom_user_serializer.errors
-            },status=status.HTTP_400_BAD_REQUEST
+            },
+            status=status.HTTP_400_BAD_REQUEST
         )
