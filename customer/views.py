@@ -125,7 +125,7 @@ class PasswordChangeView(APIView):
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 class UserProfileUpdateApiView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def put(self,request,*args, **kwargs):
         user = request.user
@@ -149,4 +149,3 @@ class UserProfileUpdateApiView(APIView):
                 "custom_user_errors": custom_user_serializer.errors
             },status=status.HTTP_400_BAD_REQUEST
         )
-
