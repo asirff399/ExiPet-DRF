@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from rest_framework import viewsets
 from .models import Customer,Review
-from .serializers import UserSerializer,CustomerSerializer,ReviewSerializer,UserLoginSerializer,RegistrationSerializer,PasswordChangeSerializer
+from .serializers import UserSerializer,CustomUserSerializer,ReviewSerializer,UserLoginSerializer,RegistrationSerializer,PasswordChangeSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.tokens import default_token_generator
@@ -22,9 +22,9 @@ from rest_framework import filters, pagination
 
 class CustomerViewset(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
+    serializer_class = CustomUserSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['user__id','user__username']
+    search_fields = ['user__id']
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
@@ -124,41 +124,15 @@ class PasswordChangeView(APIView):
             return Response({"detail":"Password updated successfully."},status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
-# class UserProfileUpdateApiView(APIView):
-#     # permission_classes = [IsAuthenticated]
-
-#     def put(self,request,*args, **kwargs):
-#         user = request.user
-#         custom_user = get_object_or_404(Customer,user=user)
-
-#         user_serializer = UserSerializer(user,data=request.data.get('user'))
-#         custom_user_serializer = CustomerSerializer(custom_user,data=request.data.get('custom_user'))
-
-#         if user_serializer.is_valid() and custom_user_serializer.is_valid():
-#             user_serializer.save()
-#             custom_user_serializer.save()
-#             return Response(
-#                 {
-#                     "user": user_serializer.data,
-#                     "custom_user": custom_user_serializer.data
-#                 }, status=status.HTTP_200_OK
-#             )
-#         return Response(
-#             {
-#                 "user_errors": user_serializer.errors,
-#                 "custom_user_errors": custom_user_serializer.errors
-#             },status=status.HTTP_400_BAD_REQUEST
-# )
-
 class UserProfileUpdateApiView(APIView):
     # permission_classes = [IsAuthenticated]
 
-    def patch(self, request, *args, **kwargs):
+    def put(self,request,*args, **kwargs):
         user = request.user
-        custom_user = get_object_or_404(Customer, user=user)
+        custom_user = get_object_or_404(Customer,user=user)
 
-        user_serializer = UserSerializer(user, data=request.data.get('user'), partial=True)
-        custom_user_serializer = CustomerSerializer(custom_user, data=request.data.get('custom_user'), partial=True)
+        user_serializer = UserSerializer(user,data=request.data.get('user'))
+        custom_user_serializer = CustomUserSerializer(custom_user,data=request.data.get('custom_user'))
 
         if user_serializer.is_valid() and custom_user_serializer.is_valid():
             user_serializer.save()
@@ -167,14 +141,11 @@ class UserProfileUpdateApiView(APIView):
                 {
                     "user": user_serializer.data,
                     "custom_user": custom_user_serializer.data
-                },
-                status=status.HTTP_200_OK
+                }, status=status.HTTP_200_OK
             )
-
         return Response(
             {
                 "user_errors": user_serializer.errors,
                 "custom_user_errors": custom_user_serializer.errors
-            },
-            status=status.HTTP_400_BAD_REQUEST
+            },status=status.HTTP_400_BAD_REQUEST
         )

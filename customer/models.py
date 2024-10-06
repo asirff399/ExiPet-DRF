@@ -10,7 +10,7 @@ class Customer(models.Model):
     balance = models.DecimalField(default=0, max_digits=12, decimal_places=2)
     phone = models.CharField(max_length=11, default='')
     address = models.CharField(max_length=200)
-    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES,default='Customer')
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES,default='User')
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"

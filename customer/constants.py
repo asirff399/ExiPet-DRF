@@ -1,6 +1,6 @@
 USER_TYPE_CHOICES = (
         ('Admin', 'Admin'),
-        ('Customer', 'Customer'),
+        ('User', 'User'),
     )
 
 STAR_CHOICES = [
