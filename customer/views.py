@@ -151,7 +151,7 @@ class PasswordChangeView(APIView):
 #         )
 
 class UserProfileUpdateAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_object(self):
         # Retrieve the customer object for the current authenticated user
