@@ -154,21 +154,14 @@ class UserProfileUpdateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        # Retrieve the customer profile based on the authenticated user
+        # Retrieve the customer object for the current authenticated user
         return self.request.user.customer
 
     def put(self, request, *args, **kwargs):
         customer = self.get_object()
-        serializer = CustomUserSerializer(customer, data=request.data, partial=False)  # Use partial=False for PUT
+        # Pass the full data to the serializer (PUT requires all fields to be provided)
+        serializer = CustomUserSerializer(customer, data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def patch(self, request, *args, **kwargs):
-        customer = self.get_object()
-        serializer = CustomUserSerializer(customer, data=request.data, partial=True)  # Use partial=True for PATCH
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+            serializer.save()  # This will update both the Customer and User models
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
