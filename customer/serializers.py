@@ -10,11 +10,29 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
         
+# class CustomUserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Customer
+#         fields = '__all__'
+
 class CustomUserSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
     class Meta:
         model = Customer
-        fields = '__all__'
+        fields = ['user', 'image', 'balance', 'phone', 'address', 'user_type']
 
+    def update(self, instance, validated_data):
+        # Update nested User fields
+        user_data = validated_data.pop('user', None)
+        if user_data:
+            user_serializer = UserSerializer(instance=instance.user, data=user_data, partial=True)
+            if user_serializer.is_valid():
+                user_serializer.save()
+
+        # Update Customer fields
+        return super().update(instance, validated_data)
+    
 class ReviewSerializer(serializers.ModelSerializer):
     reviewer = serializers.StringRelatedField(many=False)
     class Meta:

@@ -150,35 +150,25 @@ class PasswordChangeView(APIView):
 #             },status=status.HTTP_400_BAD_REQUEST
 #         )
 
-class UserProfileUpdateApiView(APIView):
+class UserProfileUpdateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    def get_object(self):
+        # Retrieve the customer profile based on the authenticated user
+        return self.request.user.customer
+
     def put(self, request, *args, **kwargs):
-        user = request.user
-        custom_user = get_object_or_404(Customer, user=user)
+        customer = self.get_object()
+        serializer = CustomUserSerializer(customer, data=request.data, partial=False)  # Use partial=False for PUT
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        user_serializer = UserSerializer(user, data=request.data.get('user'))
-        custom_user_serializer = CustomUserSerializer(custom_user, data=request.data.get('custom_user'))
-
-        # Using transaction to ensure atomic save
-        if user_serializer.is_valid() and custom_user_serializer.is_valid():
-            try:
-                with transaction.atomic():
-                    user_serializer.save()
-                    custom_user_serializer.save()
-                return Response(
-                    {
-                        "user": user_serializer.data,
-                        "custom_user": custom_user_serializer.data
-                    }, status=status.HTTP_200_OK
-                )
-            except Exception as e:
-                return Response(
-                    {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
-        return Response(
-            {
-                "user_errors": user_serializer.errors,
-                "custom_user_errors": custom_user_serializer.errors
-            }, status=status.HTTP_400_BAD_REQUEST
-        )
+    def patch(self, request, *args, **kwargs):
+        customer = self.get_object()
+        serializer = CustomUserSerializer(customer, data=request.data, partial=True)  # Use partial=True for PATCH
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
