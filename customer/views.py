@@ -16,7 +16,7 @@ from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 # Create your views here.
-# views.py
+from django.db import transaction
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import filters, pagination
 
@@ -124,28 +124,61 @@ class PasswordChangeView(APIView):
             return Response({"detail":"Password updated successfully."},status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
+# class UserProfileUpdateApiView(APIView):
+#     # permission_classes = [IsAuthenticated]
+
+#     def put(self,request,*args, **kwargs):
+#         user = request.user
+#         custom_user = get_object_or_404(Customer,user=user)
+
+#         user_serializer = UserSerializer(user,data=request.data.get('user'))
+#         custom_user_serializer = CustomUserSerializer(custom_user,data=request.data.get('custom_user'))
+
+#         if user_serializer.is_valid() and custom_user_serializer.is_valid():
+#             user_serializer.save()
+#             custom_user_serializer.save()
+#             return Response(
+#                 {
+#                     "user": user_serializer.data,
+#                     "custom_user": custom_user_serializer.data
+#                 }, status=status.HTTP_200_OK
+#             )
+#         return Response(
+#             {
+#                 "user_errors": user_serializer.errors,
+#                 "custom_user_errors": custom_user_serializer.errors
+#             },status=status.HTTP_400_BAD_REQUEST
+#         )
+
 class UserProfileUpdateApiView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
-    def put(self,request,*args, **kwargs):
+    def put(self, request, *args, **kwargs):
         user = request.user
-        custom_user = get_object_or_404(Customer,user=user)
+        custom_user = get_object_or_404(Customer, user=user)
 
-        user_serializer = UserSerializer(user,data=request.data.get('user'))
-        custom_user_serializer = CustomUserSerializer(custom_user,data=request.data.get('custom_user'))
+        user_serializer = UserSerializer(user, data=request.data.get('user'))
+        custom_user_serializer = CustomUserSerializer(custom_user, data=request.data.get('custom_user'))
 
+        # Using transaction to ensure atomic save
         if user_serializer.is_valid() and custom_user_serializer.is_valid():
-            user_serializer.save()
-            custom_user_serializer.save()
-            return Response(
-                {
-                    "user": user_serializer.data,
-                    "custom_user": custom_user_serializer.data
-                }, status=status.HTTP_200_OK
-            )
+            try:
+                with transaction.atomic():
+                    user_serializer.save()
+                    custom_user_serializer.save()
+                return Response(
+                    {
+                        "user": user_serializer.data,
+                        "custom_user": custom_user_serializer.data
+                    }, status=status.HTTP_200_OK
+                )
+            except Exception as e:
+                return Response(
+                    {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
         return Response(
             {
                 "user_errors": user_serializer.errors,
                 "custom_user_errors": custom_user_serializer.errors
-            },status=status.HTTP_400_BAD_REQUEST
+            }, status=status.HTTP_400_BAD_REQUEST
         )
