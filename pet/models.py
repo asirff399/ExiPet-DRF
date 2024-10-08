@@ -20,7 +20,7 @@ class Pet(models.Model):
     image = models.CharField(max_length=200) 
     adoption_status = models.CharField(max_length=10, choices=ADOPTION_TYPE_CHOICES,default='Available')    
     gender = models.CharField(max_length=10, choices=GENDER_TYPE_CHOICES)
-    age = models.DecimalField(null=True,decimal_places=1,max_digits=2)
+    age = models.DecimalField(null=True,decimal_places=2,max_digits=3)
     price = models.IntegerField()
     created_on = models.DateTimeField(auto_now_add=True,null=True)
 
