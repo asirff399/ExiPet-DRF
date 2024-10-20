@@ -1,4 +1,4 @@
-This is my first Django project, built using Django Rest Framework (DRF). The project is a Pet Adoption Platform that provides users with various features to explore, adopt, and manage pet listings. Key functionalities included: 
+This is my Django project, built using Django Rest Framework (DRF). The project is a Pet Adoption Platform that provides users with various features to explore, adopt, and manage pet listings. Key functionalities included: 
 
 💫 Authentication: New users can register on the platform using their email. An activation link is sent to their email to verify and activate their account, ensuring a secure onboarding process.
 
