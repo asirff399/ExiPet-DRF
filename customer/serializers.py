@@ -15,7 +15,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = Customer
         fields = '__all__'
 
-
 class ReviewSerializer(serializers.ModelSerializer):
     reviewer = serializers.StringRelatedField(many=False)
     class Meta:
@@ -75,7 +74,6 @@ class PasswordChangeSerializer(serializers.Serializer):
         if not user.check_password(data['old_password']):
             raise serializers.ValidationError({"old_password":"Old password is incorrect."})
         return data
-
 
 
 

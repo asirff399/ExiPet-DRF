@@ -34,6 +34,7 @@ urlpatterns = [
     path('member/', include('member.urls')),
     path('pet/', include('pet.urls')),
     path('transaction/', include('transaction.urls')), 
+    path("api-auth/", include("rest_framework.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
