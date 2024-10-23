@@ -1,6 +1,6 @@
 MEMBER_TYPE_CHOICES = (
-        ('pet_sitter', 'PET SITTER'),
-        ('pet_grommer', 'PET GROMMER'),
-        ('pet_doctor', 'PET DOCTOR'),
-        ('pet_manager', 'PET MANAGER'),
+        ('PET SITTER', 'PET SITTER'),
+        ('PET GROMMER', 'PET GROMMER'),
+        ('PET DOCTOR', 'PET DOCTOR'),
+        ('PET MANAGER', 'PET MANAGER'),
     )
