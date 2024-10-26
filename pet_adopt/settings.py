@@ -31,7 +31,6 @@ DEBUG = True
 ALLOWED_HOSTS = ["127.0.0.1", ".vercel.app"]
 
 
-
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     'corsheaders',
@@ -51,8 +50,6 @@ INSTALLED_APPS = [
     'transaction',
     'member',
 ]
-#  'cloudinary',
-#  'cloudinary_storage',
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -115,12 +112,6 @@ REST_FRAMEWORK = {
 #     }
 # }
 
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         # Replace this value with your local database's connection string.
-#         default='postgresql://exipet_user:OTCULQBAMy3DqZuk969wiBCa7kYbNmap@dpg-cr6uqurtq21c73frph60-a.oregon-postgres.render.com/exipet',
-#     )
-# }
 
 DATABASES = {
     'default': {
@@ -174,17 +165,14 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CLOUDINARY_STORAGE = {
-#     'CLOUD_NAME':'djjx7ln02',
-#     'API_KEY':'186913868112986',
-#     'API_SECRET':'Q4W_-E6RdfQVSiGemiarjh3v35w',
-# }
-# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -193,9 +181,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = config("EMAIL")
 EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD")  
 
-SSLCOMMERZ_STORE_ID = 'exipe6719a3b69d208'
-SSLCOMMERZ_STORE_PASSWORD = 'exipe6719a3b69d208@ssl'
-SSLCOMMERZ_SANDBOX_MODE = True
+# SSLCOMMERZ_STORE_ID = 'exipe6719a3b69d208'
+# SSLCOMMERZ_STORE_PASSWORD = 'exipe6719a3b69d208@ssl'
+# SSLCOMMERZ_SANDBOX_MODE = True
 
 # SSLCOMMERZ_STORE_ID = env('STORE_ID')
 # SSLCOMMERZ_STORE_PASSWORD = env('STORE_PASSWORD')
