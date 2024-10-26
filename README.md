@@ -85,8 +85,8 @@
       POST /contact_us
       POST /member
       POST /member
-      PUT /Transaction/deposit
-      PUT /Transaction/withdraw
+      PUT /transaction/deposit
+      PUT /transaction/withdraw
 
 
 
