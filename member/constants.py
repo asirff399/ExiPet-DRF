@@ -1,0 +1,6 @@
+MEMBER_TYPE_CHOICES = (
+        ('PET SITTER', 'PET SITTER'),
+        ('PET GROMMER', 'PET GROMMER'),
+        ('PET DOCTOR', 'PET DOCTOR'),
+        ('PET MANAGER', 'PET MANAGER'),
+    )

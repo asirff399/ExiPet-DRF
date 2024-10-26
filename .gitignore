@@ -1,0 +1,7 @@
+pet_adopt/.env
+db.sqlite3
+__pycache__/
+images
+
+
+
