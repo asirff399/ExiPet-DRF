@@ -91,7 +91,7 @@
 
 
 
-## 🧑‍💻 Technology: 
+## 💻 Technology: 
 
 - Django
 - Django Rest Framework (DRF)
