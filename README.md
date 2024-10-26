@@ -93,7 +93,10 @@
 
 ## 🧑‍💻 Technology: 
 
-Django, Django Rest Framework (DRF), PostgreSQL, etc.
+- Django
+- Django Rest Framework (DRF)
+- PostgreSQL
+- etc.
 
 ---
 
