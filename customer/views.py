@@ -62,6 +62,7 @@ class CustomerViewset(viewsets.ModelViewSet):
 #         return Customer.objects.all()
 
 class ReviewViewSet(viewsets.ModelViewSet):
+    
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     filter_backends = [filters.SearchFilter]
