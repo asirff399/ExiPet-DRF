@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from rest_framework import viewsets,filters
+from rest_framework import viewsets,filters,pagination
 from .models import Customer,Review
 from .serializers import UserSerializer,CustomUserSerializer,ReviewSerializer,UserLoginSerializer,RegistrationSerializer,PasswordChangeSerializer
 from rest_framework.views import APIView
@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout,update_session_auth_hash
 from rest_framework.authtoken.models import Token
 from rest_framework import status
+from django.contrib import messages
 # for sending email
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -47,7 +48,7 @@ class CustomerViewset(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomUserSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['user__id','user__username']
+    search_fields = ['user__id']
 
 # class CustomerViewset(viewsets.ModelViewSet):
 #     queryset = Customer.objects.all()
@@ -62,7 +63,6 @@ class CustomerViewset(viewsets.ModelViewSet):
 #         return Customer.objects.all()
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     filter_backends = [filters.SearchFilter]
