@@ -16,10 +16,7 @@ from rest_framework import filters, pagination
 
 from django.conf import settings
 from sslcommerz_lib import SSLCOMMERZ
-# class PetPagination(pagination.PageNumberPagination):
-#     page_size = 6 # items per page
-#     page_size_query_param = page_size
-#     max_page_size = 100
+
 
 class PetFilter(django_filters.FilterSet):
     author = django_filters.CharFilter(field_name='author__id', lookup_expr='icontains')
