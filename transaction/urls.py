@@ -1,12 +1,10 @@
 from django.urls import path,include
 from rest_framework.routers import DefaultRouter
-from .views import DeposiMoneyAPIView,WithdrawMoneyAPIView
-
-router = DefaultRouter()
-
+# from .views import 
 
 urlpatterns = [
-    path('',include(router.urls)),
-    path('deposit/',DeposiMoneyAPIView.as_view(),name='deposit'),
-    path('withdraw/',WithdrawMoneyAPIView.as_view(),name='withdraw'),
+    # path('payment/initiate/<int:post_id>', InitiatePaymentView.as_view(), name='initiate_payment'),
+    # path('payment/success/<int:user_id>/<int:post_id>/<int:amount>/<tran_id>', payment_success, name='payment_success'),
+    # path('payment/fail/', payment_fail, name='payment_fail'),
+    # path('payment/cancel/', payment_cancel, name='payment_cancel'),
 ] 

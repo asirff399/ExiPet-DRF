@@ -15,7 +15,7 @@ class AdoptionSerializer(serializers.ModelSerializer):
     customer = serializers.StringRelatedField(many=False)
     class Meta:
         model = Adoption
-        fields = ['customer','pet', 'pet_name', 'pet_image', 'adopted_on', 'pet_price', 'balance_after_adoption']
+        fields = ['customer','pet', 'pet_name', 'pet_image', 'adopted_on', 'pet_price', 'transaction_id']
         read_only_fields = ['adopted_on', 'pet_name', 'pet_image']
 
 class PetTypeSerializer(serializers.ModelSerializer):

@@ -1,79 +1,92 @@
 from django.contrib import messages
-from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from datetime import datetime
 from django.db.models import Sum
 from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404,redirect
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
-from .models import Deposite,Withdraw
 from customer.models import Customer
-from .serializers import DepositSerializer,WithdrawSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from pet.models import Pet,Adoption
 # Create your views here.
+import uuid
+from django.http import JsonResponse,HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from sslcommerz_lib import SSLCOMMERZ 
+from django.contrib.auth.models import User
 
-
-class DeposiMoneyAPIView(APIView):
+class InitiatePaymentView(APIView):
     # permission_classes = [IsAuthenticated]
 
-    def put(self,request,*args, **kwargs):
-        if not request.user.is_authenticated:
-            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
-        serializer = DepositSerializer(data=request.data)
-        user = request.user
+    def post(self, request, pet_id):
+        transaction_id = str(uuid.uuid4())
+        pet = get_object_or_404(Pet, id=pet_id)
+        cus_user = Customer.objects.get(user=request.user)
 
-        if serializer.is_valid():
-            amount = serializer._validated_data['amount']
-            customer = user.customer
-            customer.balance += amount
-            customer.save(update_fields=['balance'])
+        settings = {'store_id': 'exipe6719a3b69d208', 'store_pass': 'exipe6719a3b69d208@ssl', 'issandbox': True }
 
-            serializer.save(user=user,balance_after_transaction = customer.balance)
+        sslcz = SSLCOMMERZ(settings)
+        post_body = {
+            'total_amount': pet.price,
+            'currency': "BDT",
+            'tran_id': transaction_id,
+            'success_url': f'http://127.0.0.1:8000/transaction/payment/success/{request.user.id}/{pet_id}/{pet.price}/{transaction_id}',
+            'fail_url': 'http://127.0.0.1:8000/transaction/payment/fail/',
+            'cancel_url': 'http://127.0.0.1:8000/transaction/payment/cancel/',
+            'emi_option': 0,
+            'cus_name': request.user.username,
+            'cus_email': request.user.email,
+            'cus_phone': cus_user.phone,
+            'cus_add1': cus_user.address,
+            'cus_city': "Dhaka",
+            'cus_country': "Bangladesh",
+            'shipping_method': "NO",
+            'multi_card_name': "",
+            'num_of_item': 1,
+            'product_name': pet.name,
+            'product_category': pet.pet_type,
+            'product_profile': "general"
+        }
 
-            try:
-                email_subject = "Deposit Message"
-                email_body = render_to_string('deposit_email.html',{'user':user,'amount':amount})
-                email = EmailMultiAlternatives(email_subject,'',to=[user.email])
-                email.attach_alternative(email_body,"text/html")
-                email.send()
-            except Exception as e:
-                print(f"Failed to send email: {e}")
+        response = sslcz.createSession(post_body)
+        if response and 'GatewayPageURL' in response:
+            return JsonResponse({'gateway_url': response['GatewayPageURL']})
+        else:
+            return JsonResponse({'error': 'Failed to initiate payment'}, status=400)
+    
+@csrf_exempt
+def payment_success(request,user_id,pet_id,amount,tran_id):
 
-            return Response({"success":"Amount deposited successfully!"},status=status.HTTP_200_OK)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    if not amount or not pet_id or not tran_id or not user_id:
+        return HttpResponse("Invalid payment details", status=400)
+    
+    try:
+        pet = get_object_or_404(Pet,id=pet_id)
+        pet.price += int(amount)
+        pet.save()
 
-class WithdrawMoneyAPIView(APIView):
-    # permission_classes = [IsAuthenticated]
+        user = get_object_or_404(User,id=user_id)
 
-    def put(self,request,*args, **kwargs):
-        if not request.user.is_authenticated:
-            return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
-        serializer = WithdrawSerializer(data=request.data, context={'request': request})
-        user = request.user
+        adoption = Adoption.objects.create(
+            customer = user,
+            pet = pet,
+            pet_price = amount,
+            transaction_id = tran_id
+        )
+        adoption.save()
 
-        if serializer.is_valid():
-            amount = serializer.validated_data['amount']
-            customer = user.customer
+    except Exception as e:
+        return HttpResponse(f"Error updating post: {str(e)}", status=500)
+    
+    return render(request, "payment_success.html", {"amount": amount, "pet": pet , "tran_id": tran_id, "user":user})
 
-            if customer.balance < amount:
-                return Response({"error": "Insufficient Balance"}, status=status.HTTP_400_BAD_REQUEST)
-            
-            customer.balance -= amount
-            customer.save(update_fields = ['balance'])
 
-            serializer.save(user=user, balance_after_transaction = customer.balance)
+@csrf_exempt
+def payment_fail(request):
+    return render(request, "payment_fail.html",{"message": "Payment failed !!"},status=status.HTTP_400_BAD_REQUEST)
 
-            try:
-                email_subject = "Withdrawal Message"
-                email_body = render_to_string('withdrawal_email.html',{'user':user,'amount': amount})
-                email = EmailMultiAlternatives(email_subject,'', to=[user.email])
-                email.attach_alternative(email_body,"text/html")
-                email.send()
-            except Exception as e:
-                print(f"Failed to send email: {e}")
-
-            return Response({"success": "Amount withdrawn successfully!"}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+@csrf_exempt
+def payment_cancel(request):
+    return render(request, "payment_cancel.html",{"message": "Payment canceled !!"},status=status.HTTP_200_OK)

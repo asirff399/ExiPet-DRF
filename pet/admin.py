@@ -5,7 +5,7 @@ class PetAdmin(admin.ModelAdmin):
     list_display = ['name','gender','price']
 
 class AdoptionAdmin(admin.ModelAdmin):
-    list_display = ['customer','pet__name','adopted_on','pet_price','balance_after_adoption']
+    list_display = ['customer','pet__name','adopted_on','pet_price','transaction_id'] 
 
 class PetTypeAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug':('name',)}

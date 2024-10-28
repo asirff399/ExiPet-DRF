@@ -12,10 +12,7 @@ from rest_framework import status
 from django.http import Http404
 from django.utils import timezone
 from django_filters import rest_framework as django_filters
-from rest_framework import filters, pagination
-
-from django.conf import settings
-from sslcommerz_lib import SSLCOMMERZ
+from rest_framework import filters
 
 
 class PetFilter(django_filters.FilterSet):
@@ -97,81 +94,6 @@ class PetDetails(APIView):
         
         pet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-# class InitiatPaymentAPIView(APIView):
-#     def post(self,request,pet_id):
-#         print(f'Received request to adopt pet with ID {pet_id}')
-#         pet = get_object_or_404(Pet,id=pet_id)
-#         print(f"Pet found: {pet.name}, ID: {pet.id}")
-
-#         customer = get_object_or_404(Customer,user=request.user)
-
-#         sslcommerz = SSLCOMMERZ({
-#             'store_id': settings.SSLCOMMERZ_STORE_ID,
-#             'store_pass': settings.SSLCOMMERZ_STORE_PASSWORD,
-#             'issandbox': settings.SSLCOMMERZ_SANDBOX_MODE
-#         })
-
-#         post_body = {
-#             'total_amount': pet.price,
-#             'currency': 'BDT',
-#             'tran_id': f'TRX_{pet.id}_{request.user.id}',  # Unique transaction ID
-#             'success_url':f'http://127.0.0.1:8000/pet/payment/success/{pet_id}',
-#             'fail_url': f'http://127.0.0.1:8000/pet/payment/failed/',
-#             'cancel_url': f'http://127.0.0.1:8000/pet/payment/cancel/',
-#             'cus_name': request.user.username,
-#             'cus_email': request.user.email,
-#             'cus_phone': customer.phone,
-#             'cus_add1': customer.address,
-#             'cus_city': customer.address,
-#             'cus_country': 'Bangladesh',
-#             'shipping_method': 'NO',
-#             'product_name': pet.name,
-#             'product_category': pet.pet_type.name,
-#             'product_profile': 'general'
-#         }
-
-#         response = sslcommerz.createSession(post_body)
-#         if response['status'] == 'SUCCESS':
-#             return Response({'payment_url': response['GatewayPageURL']}, status=status.HTTP_200_OK)
-#         else:
-#             return Response({'error': 'Payment initiation failed, please try again later.'}, status=status.HTTP_400_BAD_REQUEST)
-
-# class PaymentSuccessAPIView(APIView):
-#     def post(self,request,pet_id):
-#         print(f'Received request to adopt pet with ID {pet_id}')
-#         pet = get_object_or_404(Pet,id=pet_id)
-#         print(f"Pet found: {pet.name}, ID: {pet.id}")
-#         customer = request.user
-#         cus_profile = get_object_or_404(Customer,id=request.user.id)
-
-#         if cus_profile.balance >= pet.price:
-#             cus_profile.balance -= pet.price
-#             cus_profile.save()
-
-#             pet.adoption_status = 'Adopted'
-#             pet.save()
-
-#             adoption = Adoption.objects.create(
-#                 customer=customer,
-#                 pet=pet,
-#                 pet_price=pet.price,
-#                 balance_after_adoption=cus_profile.balance,
-#             )
-
-#             serializer=AdoptionSerializer(adoption)
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         else:
-#             return Response({'error':'Insufficient balance to adopt this pet'}, status=status.HTTP_400_BAD_REQUEST)
-
-# class PaymentFailAPIView(APIView):
-#     def get(self, request):
-#         return Response({'message': 'Payment failed. Please try again.'}, status=status.HTTP_200_OK)
-
-# class PaymentCancelAPIView(APIView):
-#     def get(self, request):
-#         return Response({'message': 'Payment was canceled.'}, status=status.HTTP_200_OK)
-
 
 class AdoptPetAPIView(APIView):
     # permission_classes = [IsAuthenticated]
