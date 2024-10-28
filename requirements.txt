@@ -17,3 +17,4 @@ sqlparse==0.5.1
 tzdata==2024.2
 urllib3==2.2.3
 whitenoise==6.7.0
+sslcommerz-lib==1.0

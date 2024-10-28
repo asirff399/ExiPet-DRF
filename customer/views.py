@@ -50,18 +50,6 @@ class CustomerViewset(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['user__id']
 
-# class CustomerViewset(viewsets.ModelViewSet):
-#     queryset = Customer.objects.all()
-#     serializer_class = CustomUserSerializer
-#     # filter_backends = [filters.SearchFilter]
-#     # search_fields = ['user__id']
-    
-#     def get_queryset(self):
-#         user_id = self.request.query_params.get('user_id')
-#         if user_id:
-#             return Customer.objects.filter(user=user_id)
-#         return Customer.objects.all()
-
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
