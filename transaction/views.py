@@ -64,7 +64,11 @@ def payment_success(request,user_id,pet_id,amount,tran_id):
     
     try:
         pet = get_object_or_404(Pet,id=pet_id)
-        pet.price += int(amount)
+
+        if pet.adoption_status != "Available":
+            return HttpResponse("This pet is already adopted or unavailable", status=400)
+        
+        pet.adoption_status = "Adopted"
         pet.save()
 
         user = get_object_or_404(User,id=user_id)
