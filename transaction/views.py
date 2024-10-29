@@ -24,6 +24,7 @@ class InitiatePaymentView(APIView):
         transaction_id = str(uuid.uuid4())
         pet = get_object_or_404(Pet, id=pet_id)
         cus_user = Customer.objects.get(user=request.user)
+        amount = int(pet.price)
 
         settings = {'store_id': 'exipe6719a3b69d208', 'store_pass': 'exipe6719a3b69d208@ssl', 'issandbox': True }
 
@@ -32,7 +33,7 @@ class InitiatePaymentView(APIView):
             'total_amount': pet.price,
             'currency': "BDT",
             'tran_id': transaction_id,
-            'success_url': f'https://exi-pet-drf.vercel.app/transaction/payment/success/{request.user.id}/{pet_id}/{pet.price}/{transaction_id}',
+            'success_url': f'https://exi-pet-drf.vercel.app/transaction/payment/success/{request.user.id}/{pet_id}/{amount}/{transaction_id}',
             'fail_url': 'https://exi-pet-drf.vercel.app/transaction/payment/fail/',
             'cancel_url': 'https://exi-pet-drf.vercel.app/transaction/payment/cancel/',
             'emi_option': 0,
