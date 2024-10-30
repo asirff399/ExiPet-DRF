@@ -7,7 +7,6 @@ from pet.models import Pet
 class Customer(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,null=True,blank=True)
     image = models.CharField(max_length=200,default='https://i.ibb.co.com/80NSbds/dummy-profile.png') 
-    balance = models.DecimalField(default=0, max_digits=12, decimal_places=2)
     phone = models.CharField(max_length=20, default='+880')
     address = models.CharField(max_length=200)
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES,default='User')
