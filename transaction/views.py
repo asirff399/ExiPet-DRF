@@ -12,6 +12,7 @@ from rest_framework import status
 from pet.models import Pet,Adoption
 # Create your views here.
 import uuid
+import base64
 from django.http import JsonResponse,HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from sslcommerz_lib import SSLCOMMERZ 
@@ -21,7 +22,7 @@ class InitiatePaymentView(APIView):
     # permission_classes = [IsAuthenticated]
 
     def post(self, request, pet_id):
-        transaction_id = str(uuid.uuid4())
+        transaction_id = base64.urlsafe_b64encode(uuid.uuid4().bytes).decode('utf-8').rstrip('=')
         pet = get_object_or_404(Pet, id=pet_id)
         cus_user = Customer.objects.get(user=request.user)
         amount = int(pet.price)
