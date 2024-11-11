@@ -50,13 +50,17 @@
       
      ⚡ View their adoption history.
 
-### Adoption History Dashboard
+### Adoption History
 
 - A dedicated section that displays the user's adoption history, providing a clear overview of their activity on the platform.
 
 ### Admin Controls
 
 - Administrators have full access to manage the platform. They can add, edit, and delete posts, ensuring the site's smooth operation and integrity.
+  
+### Admin Dashboard
+
+- Administrators have full access to manage the platform from here. Can see important information  and control models.
 
 
 ## API Endpoints
