@@ -60,7 +60,7 @@
   
 ### Admin Dashboard
 
-- Administrators have full access to manage the platform from here. Can see important information  and control models.
+- Admin can see important information here, add post and see models as table view.
 
 
 ## API Endpoints
@@ -93,8 +93,6 @@
       PUT /transaction/withdraw
 
 
-
-
 ## 💻 Technology: 
 
 - Django
@@ -105,7 +103,10 @@
 ---
 
 ## 🌐 Deployment: API Deployed using Vercel.
-Live link: https://exi-pet-drf.vercel.app/
+Front-end Live: https://exipet.netlify.app/
+
+## 🌐 Deployment: API Deployed using Vercel.
+API Live link: https://exi-pet-drf.vercel.app/
 
 ## GitHub!
 Frontend: https://github.com/asirff399/ExiPet
